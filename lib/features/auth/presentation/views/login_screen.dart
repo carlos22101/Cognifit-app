@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/router/route_names.dart';
+import '../../../session/presentation/viewmodels/session_viewmodel.dart';
 import '../viewmodels/login_viewmodel.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -37,6 +38,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen<LoginState>(loginViewModelProvider, (prev, next) {
       if (next.status == LoginStatus.success) {
+        // Inicia el "timer de uso": genera el token y lo guarda junto con la
+        // variable de tiempo en el almacén encriptado.
+        ref.read(sessionViewModelProvider.notifier).startSession();
         context.go(RouteNames.teacherGroup);
       }
     });

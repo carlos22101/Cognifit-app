@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../viewmodels/group_viewmodel.dart';
 import 'widgets/student_list_tile.dart';
 import 'widgets/risk_summary_card.dart';
+import '../../../session/presentation/views/widgets/session_status_bar.dart';
 
 class GroupScreen extends ConsumerWidget {
   const GroupScreen({super.key});
@@ -24,7 +25,9 @@ class GroupScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    const SessionStatusBar(),
+                    const SizedBox(height: 8),
                     RiskSummaryCard(
                       total: group.totalStudents,
                       atRisk: group.atRisk,

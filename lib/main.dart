@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:device_preview/device_preview.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
+import 'core/app_globals.dart';
 import 'features/mock_location/presentation/viewmodels/mock_location_viewmodel.dart';
 import 'features/mock_location/presentation/views/mock_location_blocked_screen.dart';
 
@@ -13,9 +16,19 @@ void main() async {
   final status = await MockLocationViewModel.checkMockLocation();
 
   if (status.isMocked) {
-    runApp(const MockLocationBlockedScreen());
+    runApp(
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => const MockLocationBlockedScreen(),
+      ),
+    );
   } else {
-    runApp(const ProviderScope(child: CogniFitApp()));
+    runApp(
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => const ProviderScope(child: CogniFitApp()),
+      ),
+    );
   }
 }
 
@@ -35,6 +48,11 @@ class CogniFitApp extends StatelessWidget {
       title: 'CogniFit',
       theme: AppTheme.light,
       routerConfig: appRouter,
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      // Integración con Device Preview: aplica idioma, tamaño y marco del
+      // dispositivo simulado al árbol de la app.
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
     );
   }
