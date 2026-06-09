@@ -5,64 +5,50 @@ const String kWipeCommand = 'WIPE_USER_DATA';
 
 @pragma('vm:entry-point')
 Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
-  print('========================================');
-  print('MENSAJE RECIBIDO EN BACKGROUND');
-  print('Data: ${message.data}');
-  print('========================================');
-
+  print('===== FCM BACKGROUND: ${message.data} =====');
   await _handleWipeIfMatch(message);
 }
 
 Future<void> _handleWipeIfMatch(RemoteMessage message) async {
-  print('========================================');
-  print('FCM RECIBIDO');
-  print('Data: ${message.data}');
-  print('Notification: ${message.notification?.title}');
-  print('========================================');
+  print('===== FCM RECIBIDO: ${message.data} =====');
 
-  if (message.data['command'] == kWipeCommand) {
-    print('===== INICIANDO WIPE =====');
-
-    await SecureStorageService().wipeSensitiveData();
-
-    print('===== WIPE COMPLETADO =====');
-  } else {
-    print('===== COMANDO NO RECONOCIDO =====');
-    print('Comando recibido: ${message.data['command']}');
+  if (message.data['command'] != kWipeCommand) {
+    print('===== COMANDO NO RECONOCIDO: ${message.data['command']} =====');
+    return;
   }
+
+  // El wipe debe ser ESPECÍFICO para este usuario, no general:
+  // se exige que el targetUserId del mensaje coincida con el usuario local.
+  final target = message.data['targetUserId'];
+  final currentUser = await SecureStorageService().userId();
+
+  if (target == null || target != currentUser) {
+    print('===== WIPE IGNORADO: destinado a "$target", este usuario es "$currentUser" =====');
+    return;
+  }
+
+  print('===== INICIANDO WIPE para usuario $currentUser =====');
+  await SecureStorageService().wipeSensitiveData();
+  print('===== WIPE COMPLETADO =====');
 }
 
 class FcmService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   Future<String?> init() async {
-    // Solicitar permisos
     final settings = await _messaging.requestPermission();
+    print('===== PERMISOS FCM: ${settings.authorizationStatus} =====');
 
-    print('========================================');
-    print('PERMISOS FCM');
-    print('AuthorizationStatus: ${settings.authorizationStatus}');
-    print('========================================');
-
-    // Obtener token del dispositivo
     final token = await _messaging.getToken();
-
-    print('========================================');
-    print('FCM TOKEN DE ESTE USUARIO');
+    print('===== FCM TOKEN DE ESTE USUARIO =====');
     print(token);
-    print('========================================');
+    print('=====================================');
 
     // App abierta (foreground)
-    FirebaseMessaging.onMessage.listen((message) {
-      print('===== MENSAJE EN FOREGROUND =====');
-      _handleWipeIfMatch(message);
-    });
+    FirebaseMessaging.onMessage.listen(_handleWipeIfMatch);
 
     // Usuario abre la app desde la notificación
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('===== APP ABIERTA DESDE NOTIFICACION =====');
-      _handleWipeIfMatch(message);
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleWipeIfMatch);
 
     return token;
   }

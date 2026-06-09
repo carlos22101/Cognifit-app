@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/router/route_names.dart';
 import '../viewmodels/group_viewmodel.dart';
 import 'widgets/student_list_tile.dart';
 import 'widgets/risk_summary_card.dart';
@@ -24,7 +26,7 @@ class GroupScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(),
+                    _buildHeader(context),
                     const SizedBox(height: 16),
                     const SessionStatusBar(),
                     const SizedBox(height: 8),
@@ -76,7 +78,7 @@ class GroupScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
         Column(
@@ -123,18 +125,21 @@ class GroupScreen extends ConsumerWidget {
           ],
         ),
         const Spacer(),
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: const Icon(
-            Icons.notifications_none_rounded,
-            color: AppColors.inkMedium,
-            size: 22,
+        GestureDetector(
+          onTap: () => context.push(RouteNames.secureData),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: const Icon(
+              Icons.shield_outlined,
+              color: AppColors.inkMedium,
+              size: 22,
+            ),
           ),
         ),
       ],
