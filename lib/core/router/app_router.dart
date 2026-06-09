@@ -2,10 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'route_names.dart';
 import '../../features/auth/presentation/views/login_screen.dart';
 import '../../features/teacher/presentation/views/group_screen.dart';
-
 import '../../features/session/presentation/views/inactivity_detector.dart';
-
-
 import '../../features/secure_data/presentation/secure_data_screen.dart';
 
 final appRouter = GoRouter(
