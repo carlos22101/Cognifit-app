@@ -3,16 +3,38 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'core/app_globals.dart';
 import 'features/mock_location/presentation/viewmodels/mock_location_viewmodel.dart';
 import 'features/mock_location/presentation/views/mock_location_blocked_screen.dart';
+import 'features/secure_data/data/fcm_service.dart';
+import 'features/secure_data/data/secure_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _setSecureFlag();
 
+  // 1. Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // 2. Registrar handler de background (antes de runApp)
+  FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
+
+  // 3. Poblar datos sensibles automáticamente
+  await SecureStorageService().seedDummyData();
+
+  // 4. Iniciar FCM y obtener token del usuario
+  final token = await FcmService().init();
+  debugPrint('=== FCM TOKEN DE ESTE USUARIO ===');
+  debugPrint(token);
+  debugPrint('=================================');
+
+  // 5. Lógica existente
+  await _setSecureFlag();
   final status = await MockLocationViewModel.checkMockLocation();
 
   if (status.isMocked) {

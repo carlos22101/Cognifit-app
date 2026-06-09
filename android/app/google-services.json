@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "331802698520",
+    "project_id": "cognifit-fcm",
+    "storage_bucket": "cognifit-fcm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331802698520:android:de5e152eade1bccceb746d",
+        "android_client_info": {
+          "package_name": "com.example.cognifit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx5qG-K7viMM_iIPLbHE7vlO6eLxqK_mQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

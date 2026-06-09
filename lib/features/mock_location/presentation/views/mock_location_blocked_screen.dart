@@ -93,7 +93,7 @@ class _MockLocationBlockedScreenState extends State<MockLocationBlockedScreen> {
                       color: const Color(0xFFFFF8E1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color(0xFFFFA726).withOpacity(0.3),
+                        color: const Color(0xFFFFA726).withValues(alpha: 0.3),
                       ),
                     ),
                     child: const Column(

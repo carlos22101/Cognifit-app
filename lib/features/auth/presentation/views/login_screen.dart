@@ -281,7 +281,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFFDECEB),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.riskRed.withOpacity(0.3)),
+        border: Border.all(color: AppColors.riskRed.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
