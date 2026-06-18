@@ -13,9 +13,21 @@ import 'features/mock_location/presentation/viewmodels/mock_location_viewmodel.d
 import 'features/mock_location/presentation/views/mock_location_blocked_screen.dart';
 import 'features/secure_data/data/fcm_service.dart';
 import 'features/secure_data/data/secure_storage_service.dart';
+import 'features/usb_debug/data/usb_debug_service.dart';
+import 'features/usb_debug/presentation/usb_debug_blocked_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // ===== RASP: Detección de Depuración USB =====
+  // Solo se aplica fuera de desarrollo (entorno tipo producción/Release).
+  if (!kDebugMode) {
+    final usbDebugging = await UsbDebugService.isUsbDebuggingEnabled();
+    if (usbDebugging) {
+      runApp(const UsbDebugBlockedApp());
+      return; // detiene el arranque normal de la app
+    }
+  }
+  // ==============================================
 
   // 1. Firebase
   await Firebase.initializeApp(
