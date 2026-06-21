@@ -2,9 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// App de bloqueo que se muestra cuando se detecta Depuración USB activa.
-/// Despliega un AlertDialog persistente (no descartable) y cierra la app
-/// por completo al presionar el botón.
 class UsbDebugBlockedApp extends StatelessWidget {
   const UsbDebugBlockedApp({super.key});
 
@@ -64,10 +61,9 @@ class _BlockedScaffoldState extends State<_BlockedScaffold> {
     );
   }
 
-  /// Cierre limpio de la aplicación.
   void _closeApp() {
-    SystemNavigator.pop(); // cierra la actividad en Android
-    exit(0); // garantiza el cierre completo del proceso
+    SystemNavigator.pop(); 
+    exit(0); 
   }
 
   @override

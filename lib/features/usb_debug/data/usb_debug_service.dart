@@ -1,7 +1,5 @@
 import 'package:flutter/services.dart';
 
-/// Servicio RASP: consulta al sistema Android (vía MethodChannel) si la
-/// Depuración USB (Settings.Global.ADB_ENABLED) está activa.
 class UsbDebugService {
   static const _channel = MethodChannel('cognifit/security');
 

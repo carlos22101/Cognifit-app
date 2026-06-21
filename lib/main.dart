@@ -18,16 +18,18 @@ import 'features/usb_debug/presentation/usb_debug_blocked_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // ===== RASP: Detección de Depuración USB =====
-  // Solo se aplica fuera de desarrollo (entorno tipo producción/Release).
+
+  // ===== RASP: Detección de Depuración USB  =====
   if (!kDebugMode) {
     final usbDebugging = await UsbDebugService.isUsbDebuggingEnabled();
     if (usbDebugging) {
       runApp(const UsbDebugBlockedApp());
-      return; // detiene el arranque normal de la app
+      return; 
     }
   }
-  // ==============================================
+  
+  WidgetsBinding.instance.addObserver(AppLifecycleSecurityObserver());
+  
 
   // 1. Firebase
   await Firebase.initializeApp(
@@ -89,5 +91,20 @@ class CogniFitApp extends StatelessWidget {
       builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
     );
+  }
+}
+
+// ===== RASP: Observador de Ciclo de Vida =====
+class AppLifecycleSecurityObserver extends WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // Si la app regresa al primer plano (resumed) y no estamos en modo debug
+    if (state == AppLifecycleState.resumed && !kDebugMode) {
+      final usbDebugging = await UsbDebugService.isUsbDebuggingEnabled();
+      if (usbDebugging) {
+        // Reemplaza toda la app con la pantalla de bloqueo en tiempo real
+        runApp(const UsbDebugBlockedApp());
+      }
+    }
   }
 }
