@@ -34,6 +34,18 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            // R8: ofuscación (renombrado de clases/métodos) + shrinking (elimina
+            // código no usado) + shrink de recursos. R8 es el ofuscador por
+            // defecto de Android; sustituye a ProGuard en AGP moderno.
+            // Para el APK NORMAL (sin ofuscar) de la práctica: pon esto en false.
+            val obfuscate = true
+            isMinifyEnabled = obfuscate
+            isShrinkResources = obfuscate  // requiere isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }
